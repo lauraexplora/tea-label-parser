@@ -2,6 +2,8 @@ import cv2
 import pytesseract
 import numpy as np
 from pytesseract import Output
+
+import time
  
 img_source = cv2.imread('images/coffee.jpg')
  
@@ -29,7 +31,10 @@ opening = opening(gray)
 canny = canny(gray)
  
 for img in [img_source, gray, thresh, opening, canny]:
+    start = time.process_time()
     d = pytesseract.image_to_data(img, output_type=Output.DICT)
+    print(time.process_time() - start)
+
     n_boxes = len(d['text'])
  
     # back to RGB

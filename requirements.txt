@@ -4,3 +4,7 @@ opencv-python==4.9.0.80
 packaging==24.0
 pillow==10.3.0
 pytesseract==0.3.10
+lgpio==0.2.2.0
+rainbowhat==0.1.0
+rpi-lgpio==0.4
+smbus==1.1.post2

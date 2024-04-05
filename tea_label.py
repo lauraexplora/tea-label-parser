@@ -4,6 +4,9 @@ import pytesseract
 from pytesseract import Output
 import re
 
+cap = cv2.VideoCapture(0)
+cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
+
 def get_grayscale(image):
     return cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
@@ -12,8 +15,14 @@ def thresholding(image):
 
 def read_label():
     # Capture frame-by-frame
-    ret, frame = cap.read()
+    # for _ in range(50):  # Read 10 frames to allow the camera to stabilize
+    success, frame = cap.read()
+    if (not success):
+        print('FAIL')
+        return None
     t = pytesseract.image_to_string(thresholding(get_grayscale(frame)), lang='deu', output_type=Output.DICT)
+
+    print(t)
     
     s = re.search(r"[0-9]+(\s*-\s*)*[0-9]*([,.]+[0-9]+)*(?=\sMin)", t['text'])
     if (s is not None):
@@ -32,9 +41,6 @@ def label_to_ms(label):
 
     m = float(l)
     return int(m * 60000)
-
-cap = cv2.VideoCapture(0)
-cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
 
 while True:
     label = read_label()

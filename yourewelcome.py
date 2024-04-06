@@ -145,8 +145,3 @@ def midi():
     tone(tonePin, 493, 555.555)
     tone(tonePin, 523, 555.555)
     tone(tonePin, 440, 666.666)
-
-
-while 1:
-    midi()
-    # GPIO.cleanup()

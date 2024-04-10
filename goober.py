@@ -128,8 +128,3 @@ def press_c(channel):
 
 while True:
     g.run()
-    # time.sleep(0.05)
-
-# while 1:
-#     midi()
-#     # GPIO.cleanup()

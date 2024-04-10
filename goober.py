@@ -30,7 +30,10 @@ class Goober:
         self._cap = cv2.VideoCapture(0)
         self._cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
         self._ms = 0
+        self._paused_ms = 0
         self._scan = False
+        self._countdown = False
+        self._alarm = False
         self._scan_message = 'SCAN'
 
         self._display_clock()
@@ -44,16 +47,27 @@ class Goober:
         rainbowhat.display.show()
 
     def _display_clock(self):
-        clock_str = ms_to_clock(self._ms)
+        rainbowhat.rainbow.clear()
+        rainbowhat.rainbow.show()
+        clock_ms = 0
+        if (self._countdown):
+            if (self._paused_ms != 0):
+                clock_ms = self._paused_ms
+            else:
+                clock_ms = self._timer.get_remaining()
+                if (clock_ms == 0):
+                    # TODO: Move below commented line to alarm cancel function
+                    # self._countdown = False
+                    self._alarm = True
+
+        else:
+            clock_ms = self._ms
+
+        clock_str = ms_to_clock(clock_ms)
         self._display_message(clock_str)
 
     def _reset_scan(self):
         self._scan = False
-        self._scan_message = 'SCAN'
-
-    def _clock(self):
-        rainbowhat.rainbow.clear()
-        self._display_clock()
 
     def toggle_scan(self):
         self._scan = not self._scan
@@ -72,9 +86,15 @@ class Goober:
                 self._ms = label_to_ms(minutes)
                 # TODO: If longer than makes sense, reject?
                 self._reset_scan()
-                self._clock()
+                self._display_clock()
         else:
             self._scan_message = 'SCAN'
+
+    def start_countdown(self):
+        if not self._scan:
+            self._countdown = True
+            self._timer = Countdown(self._ms if not self._paused_ms != 0 else self._paused_ms)
+            self._timer.start()
     
     def add_minute(self):
         self._ms += 60000
@@ -92,13 +112,19 @@ class Goober:
         if(self._scan):
             self.scan_packet()
         else:
-            self._clock()
+            self._display_clock()
+        if(self._alarm):
+            midi()
     
 g = Goober()
 
 @rainbowhat.touch.A.press()
 def press_a(channel):
     g.toggle_scan()
+
+@rainbowhat.touch.C.press()
+def press_c(channel):
+    g.start_countdown()
 
 while True:
     g.run()

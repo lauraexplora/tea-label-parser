@@ -1,4 +1,5 @@
-`sudo apt install libcap-dev libkms++-dev libfmt-dev libdrm-dev libcamera-dev tesseract-ocr tesseract-ocr-deu`
+`sudo apt install -y libcap-dev libkms++-dev libfmt-dev libdrm-dev libcamera-dev tesseract-ocr tesseract-ocr-deu python3-dev`
+`sudo raspi-config nonint do_i2c 0`
 `python -m venv venv`
 `source venv/bin/activate`
 `pip install -r requirements.txt`

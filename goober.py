@@ -1,6 +1,6 @@
 import cv2
 import rainbowhat
-import time
+from picamera2 import Picamera2
 
 from tea_label import read_label, label_to_ms, get_minutes
 from countdown import Countdown
@@ -27,8 +27,9 @@ def ms_to_clock(ms):
 class Goober:
     def __init__(self) -> None:
         self._timer = Countdown(0)
-        self._cap = cv2.VideoCapture(0)
-        self._cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
+        self._cap = Picamera2()
+        self._cap.configure(self._cap.create_still_configuration())
+        self._cap.start()
         self._ms = 0
         self._paused_ms = 0
         self._scan = False
@@ -39,7 +40,7 @@ class Goober:
         self._display_clock()
 
     def __del__(self):
-        self._cap.release()
+        # self._cap.release()
         self._clear()
 
     def _display_message(self, message):
@@ -76,7 +77,7 @@ class Goober:
         self._display_message(self._scan_message)
         rainbowhat.rainbow.set_all(127, 127, 127)
         rainbowhat.rainbow.show()
-        _, frame = self._cap.read()
+        frame = self._cap.capture_array()
         label = read_label(frame)
         print(label)
         if label != '':

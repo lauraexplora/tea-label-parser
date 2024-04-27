@@ -22,7 +22,8 @@ pillow==10.3.0
 pycryptodomex==3.11.0
 pytesseract==0.3.10
 python-prctl==1.8.1
-# rainbowhat==0.1.0
+pyzmq==26.0.2
+#rainbowhat==0.1.0
 requests==2.28.1
 rpi-kms==0.1a1
 rpi-lgpio==0.4
@@ -37,3 +38,4 @@ ssh-import-id==5.10
 toml==0.10.2
 urllib3==1.26.12
 v4l2-python3==0.3.4
+zmq==0.0.0

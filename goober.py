@@ -1,5 +1,6 @@
 import cv2
 import rainbowhat
+import zmq
 from picamera2 import Picamera2
 
 from tea_label import read_label, label_to_ms, get_minutes
@@ -117,7 +118,13 @@ class Goober:
         if(self._alarm):
             midi()
     
+
+
 g = Goober()
+
+c = zmq.Context()
+s = c.socket(zmq.PAIR)
+s.connect('tcp://127.0.0.1:1234')
 
 @rainbowhat.touch.A.press()
 def press_a(channel):
@@ -128,4 +135,6 @@ def press_c(channel):
     g.start_countdown()
 
 while True:
+    btn_data = s.recv()
+    print(btn_data)
     g.run()

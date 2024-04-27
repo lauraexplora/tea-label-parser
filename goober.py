@@ -1,6 +1,6 @@
-import cv2
+#!/usr/bin/python3
 import rainbowhat
-import zmq
+import socket
 from picamera2 import Picamera2
 
 from tea_label import read_label, label_to_ms, get_minutes
@@ -119,12 +119,15 @@ class Goober:
             midi()
     
 
+localIP     = "127.0.0.1"
+localPort   = 1234
+UDPServerSocket = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
+UDPServerSocket.bind((localIP, localPort))
+UDPServerSocket.setblocking(0)
+bufferSize  = 1024
+btn_data = ''
 
 g = Goober()
-
-c = zmq.Context()
-s = c.socket(zmq.PAIR)
-s.connect('tcp://127.0.0.1:1234')
 
 @rainbowhat.touch.A.press()
 def press_a(channel):
@@ -135,6 +138,12 @@ def press_c(channel):
     g.start_countdown()
 
 while True:
-    btn_data = s.recv()
-    print(btn_data)
-    g.run()
+    try:
+        bytesAddressPair = UDPServerSocket.recvfrom(bufferSize)
+        btn_data = bytesAddressPair[0]
+    except:
+        btn_data = ''
+    finally:
+        if len(btn_data) > 0:
+            print(btn_data)
+        g.run()

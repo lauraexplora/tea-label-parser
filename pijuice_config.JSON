@@ -1,0 +1,8 @@
+{
+    "system_task": {
+        "enabled": true
+    },
+    "user_functions": {
+        "USER_FUNC1": "/usr/bin/button.py"
+      }
+}

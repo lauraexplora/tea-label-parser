@@ -1,9 +1,14 @@
 #!/usr/bin/python3
 import sys
-import zmq
+import socket
 
-btn = sys.argv[1]
-c = zmq.Context()
-s = c.socket(zmq.PAIR)
-s.bind('tcp://*:1234')
-s.send_string(btn)
+
+# PiJuice will provide switch name
+btn = sys.argv[2]
+
+bytesToSend = str.encode(btn)
+serverAddressPort   = ("127.0.0.1", 1234)
+bufferSize          = 1024
+
+UDPClientSocket = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
+UDPClientSocket.sendto(bytesToSend, serverAddressPort)
